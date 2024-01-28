@@ -72,3 +72,10 @@ pekko > dependWalkerCheck
 [error] (stream / dependWalkerCheck) java.lang.Exception: Expect depend <ScopeKeyMatcher(ScopedKey(This / Select(ConfigKey(CompileJdk9)) / This,compile),CheckConfig)> not in the dependency tree of ScopeKeyMatcher(ScopedKey(This / Select(ConfigKey(compile)) / This,packageBin),CheckBoth)
 [error] Total time: 8 s, completed 2024/1/29 1:06:28
 ```
+
+
+## License
+
+Published under The [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html), see LICENSE
+
+Copyright e.e Roiocam, LLC
