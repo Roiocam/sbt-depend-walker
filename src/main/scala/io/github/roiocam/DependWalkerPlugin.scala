@@ -21,43 +21,35 @@ object DependWalkerPlugin extends AutoPlugin {
 
   }
 
-  def scopedKeyIsMatch(
-      currentKey: ScopedKey[_],
-      executeTaskMatcher: ScopeKeyMatcher,
-      currentProject: ProjectRef
-  ): Boolean = {
-    val predicate: (ScopedKey[_], ScopedKey[_]) => Boolean = (sk, vk) =>
-      executeTaskMatcher.mode match {
-        case CheckConfig => sk.scope.config == vk.scope.config
-        case CheckTask   => sk.key == vk.key
-        case CheckBoth => sk.key == vk.key && sk.scope.config == vk.scope.config
-        case _         => false
-      }
-
-    currentKey.scope.project match {
-      case Select(projectRef) =>
-        projectRef == currentProject && predicate(
-          currentKey,
-          executeTaskMatcher.key
-        )
-      case _ => false
+  /** Used to match whether two ScopedKey are eligible
+    * @param currentKey
+    * @param executeTaskMatcher
+    * @param currentProject
+    * @return
+    */
+  def scopedKeyIsMatch(sk: ScopedKey[_], matcher: ScopeKeyMatcher): Boolean = {
+    val expectConfig = matcher.key.scope.config
+    val expectKey = matcher.key.key
+    matcher.mode match {
+      case CheckConfig => sk.scope.config == expectConfig
+      case CheckTask   => sk.key == expectKey
+      case CheckBoth   => sk.key == expectKey && sk.scope.config == expectConfig
+      case _           => false
     }
   }
 
+  /** A method use to walking on the dependency tree.
+    * @param dependencies
+    * @param expectDependMatcher
+    * @param cMap
+    * @return
+    */
   def dependWalk(
       dependencies: Set[_ <: ScopedKey[_]],
       expectDependMatcher: ScopeKeyMatcher
   )(implicit cMap: Map[Def.ScopedKey[_], Def.Flattened]): Boolean = {
-    val predicate: (ScopedKey[_], ScopedKey[_]) => Boolean = (sk, vk) =>
-      expectDependMatcher.mode match {
-        case CheckConfig => sk.scope.config == vk.scope.config
-        case CheckTask   => sk.key == vk.key
-        case CheckBoth => sk.scope.config == vk.scope.config && sk.key == vk.key
-        case _         => false
-      }
-
     dependencies.exists { sk =>
-      predicate(sk, expectDependMatcher.key) match {
+      scopedKeyIsMatch(sk, expectDependMatcher) match {
         case true => true
         case false =>
           cMap.get(sk).exists { flattened =>
@@ -71,17 +63,24 @@ object DependWalkerPlugin extends AutoPlugin {
     }
   }
 
+  /** Check dependency exist in the tree.
+    *
+    * @param currentProject
+    *   check project
+    * @param walkTask
+    *   job define
+    * @param cMap
+    *   global project settings.
+    */
   def check(
       currentProject: ProjectRef,
       walkTask: WalkTask
   )(implicit cMap: Map[Def.ScopedKey[_], Def.Flattened]): Unit = {
-
     val executeTaskOnCurrentProject = cMap.collect {
       case (currentKey, _)
-          if scopedKeyIsMatch(
+          if currentKey.scope.project.isSelect && scopedKeyIsMatch(
             currentKey,
-            walkTask.executeTask,
-            currentProject
+            walkTask.executeTask
           ) =>
         currentKey
     }
@@ -97,7 +96,7 @@ object DependWalkerPlugin extends AutoPlugin {
         )
       } else {
         throw new Exception(
-          s"Expect depend (${walkTask.expectDepend.key.scope.config} / ${${walkTask.expectDepend.key.key}}) not in the dependency tree of (${walkTask.executeTask.key.scope.config} / ${walkTask.executeTask.key.key})"
+          s"Expect depend (${walkTask.expectDepend.key.scope.config} / ${walkTask.expectDepend.key.key}) not in the dependency tree of (${walkTask.executeTask.key.scope.config} / ${walkTask.executeTask.key.key})"
         )
       }
     }

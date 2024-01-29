@@ -1,6 +1,6 @@
 name := "sbt-depend-walker"
 organization := "io.github.roiocam"
-description  := "sbt plugin for walk on the dependency tree of Build"
+description := "sbt plugin for walk on the dependency tree of Build"
 
 sbtPlugin := true
 
@@ -16,19 +16,23 @@ scalacOptions ++= Seq(
 ThisBuild / scalaVersion := "2.12.18"
 
 // start ----------- sbt-ci-release
-inThisBuild(List(
-  homepage := Some(url("https://github.com/roiocam/sbt-depend-walker")),
-  // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
-  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-  developers := List(
-    Developer(
-      id = "roiocam",
-      name = "Andy chen",
-      email = "iRoiocam@gmail.com",
-      url = url("https://github.com/roiocam")
+inThisBuild(
+  List(
+    homepage := Some(url("https://github.com/roiocam/sbt-depend-walker")),
+    // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
+    licenses := List(
+      "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")
+    ),
+    developers := List(
+      Developer(
+        id = "roiocam",
+        name = "Andy chen",
+        email = "iRoiocam@gmail.com",
+        url = url("https://github.com/roiocam")
+      )
     )
   )
-))
+)
 
 sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
@@ -58,7 +62,10 @@ ThisBuild / dynver := {
 
 // start ----------- sbt-github-actions
 ThisBuild / githubWorkflowBuild := Seq(
-  WorkflowStep.Sbt(name = Some("Build project"), commands = List("test", "scripted"))
+  WorkflowStep.Sbt(
+    name = Some("Build project"),
+    commands = List("test", "scripted")
+  )
 )
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 // publish snapshot and release
