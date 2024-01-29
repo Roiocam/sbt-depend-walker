@@ -1,6 +1,8 @@
+[![Continuous Integration](https://github.com/Roiocam/sbt-depend-walker/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Roiocam/sbt-depend-walker/actions/workflows/ci.yml)
+
 # sbt-depend-walker
 
-Walk on the dependency tree of Build to see if a specific task exists.
+A sbt plugin for walk on the dependency tree of Build to see if a specific task exists.
 
 ## Usage
 
@@ -11,7 +13,7 @@ Use the Apache Pekko project as an example
 add these line into `project/plugin.sbt`
 
 ```sbt
-addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "1.0.0")
+addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "latest")
 ```
 
 ### 2. create Depend-Walker settings
@@ -20,10 +22,11 @@ create `PekkoDependWalker` scala class on `project/PekkoDependWalker.scala`
 
 ```scala
 
-import io.github.roiocam.TaskDefine.*
-import io.github.roiocam.*
-import sbt.Keys.*
-import sbt.*
+import io.github.roiocam.DependWalkerPlugin.autoImport.walkTasks
+import io.github.roiocam.TaskDefine._
+import io.github.roiocam._
+import sbt.Keys._
+import sbt._
 
 object PekkoDependWalker {
 

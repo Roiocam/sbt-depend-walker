@@ -1,11 +1,22 @@
-lazy val scala212 = "2.12.18"
-ThisBuild / crossScalaVersions := Seq(scala212)
-ThisBuild / scalaVersion := scala212
-ThisBuild / versionScheme := Some("early-semver")
+name := "sbt-depend-walker"
+organization := "io.github.roiocam"
+description  := "sbt plugin for walk on the dependency tree of Build"
+
+sbtPlugin := true
+
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+scalacOptions ++= Seq(
+  "-unchecked",
+  "-deprecation",
+  "-Xlint",
+  "-encoding",
+  "UTF-8"
+)
+
+ThisBuild / scalaVersion := "2.12.18"
 
 // start ----------- sbt-ci-release
 inThisBuild(List(
-  organization := "io.github.roiocam",
   homepage := Some(url("https://github.com/roiocam/sbt-depend-walker")),
   // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
@@ -47,14 +58,14 @@ ThisBuild / dynver := {
 
 // start ----------- sbt-github-actions
 ThisBuild / githubWorkflowBuild := Seq(
-  WorkflowStep.Sbt(List("test", "scripted"))
+  WorkflowStep.Sbt(name = Some("Build project"), commands = List("test", "scripted"))
 )
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 // publish snapshot and release
 ThisBuild / githubWorkflowPublishTargetBranches :=
   Seq(
-    RefPredicate.StartsWith(Ref.Tag("v")),
-    RefPredicate.Equals(Ref.Branch("main"))
+    RefPredicate.Equals(Ref.Branch("main")),
+    RefPredicate.StartsWith(Ref.Tag("v"))
   )
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
@@ -82,7 +93,6 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
 )
 // end ----------- sbt-github-actions
 
-name := "sbt-depend-walker"
 enablePlugins(SbtPlugin)
 libraryDependencies ++= Dependencies.sbtDependWalker
 scalacOptions ++= Seq(
@@ -94,7 +104,6 @@ scalacOptions ++= Seq(
 )
 scriptedLaunchOpts += "-Xmx1024m"
 scriptedLaunchOpts ++= Seq("-Dplugin.version=" + version.value)
-scriptedLaunchOpts += "-debug"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -102,3 +111,6 @@ ThisBuild / scmInfo := Some(
     "scm:git@github.com:roiocam/sbt-depend-walker.git"
   )
 )
+
+enablePlugins(SbtPlugin)
+scriptedBufferLog := false
