@@ -76,27 +76,32 @@ object DependWalkerPlugin extends AutoPlugin {
       currentProject: ProjectRef,
       walkTask: WalkTask
   )(implicit cMap: Map[Def.ScopedKey[_], Def.Flattened]): Unit = {
-    val executeTaskOnCurrentProject = cMap.collect {
-      case (currentKey, _)
-          if currentKey.scope.project.isSelect && scopedKeyIsMatch(
-            currentKey,
-            walkTask.executeTask
-          ) =>
-        currentKey
+    val executeTaskOnCurrentProject = cMap.flatMap { case (currentKey, _) =>
+      for {
+        project <- currentKey.scope.project.toOption
+        if project == currentProject && scopedKeyIsMatch(
+          currentKey,
+          walkTask.executeTask
+        )
+      } yield currentKey
     }
     // walking dependency tree to  check
     for (key <- executeTaskOnCurrentProject) {
+      println(
+        s"Begin check depend on: (${currentProject.project} / ${key.scope.config} / ${key.key})"
+      )
       val depends = cMap.get(key) match {
         case Some(c) => c.dependencies.toSet;
         case None    => Set.empty
       }
-      if (dependWalk(depends, walkTask.expectDepend)) {
+      val expectDepend = walkTask.expectDepend
+      if (dependWalk(depends, expectDepend)) {
         println(
-          s"Depend verified in the tree of ${currentProject.project} / ${key.scope.config} / ${key.key}"
+          s"Depend (${expectDepend.key.scope.config} / ${expectDepend.key.key}) verified in the tree of (${currentProject.project} / ${key.scope.config} / ${key.key})"
         )
       } else {
         throw new Exception(
-          s"Expect depend (${walkTask.expectDepend.key.scope.config} / ${walkTask.expectDepend.key.key}) not in the dependency tree of (${walkTask.executeTask.key.scope.config} / ${walkTask.executeTask.key.key})"
+          s"Expect depend (${expectDepend.key.scope.config} / ${expectDepend.key.key}) not in the dependency tree of (${walkTask.executeTask.key.scope.config} / ${walkTask.executeTask.key.key})"
         )
       }
     }
