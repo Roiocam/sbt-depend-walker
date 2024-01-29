@@ -91,7 +91,11 @@ object DependWalkerPlugin extends AutoPlugin {
         case Some(c) => c.dependencies.toSet;
         case None    => Set.empty
       }
-      if (!dependWalk(depends, walkTask.expectDepend)) {
+      if (dependWalk(depends, walkTask.expectDepend)) {
+        println(
+          s"Depend verified in the tree of ${currentProject.project} / ${key.scope.config} / ${key.key}"
+        )
+      } else {
         throw new Exception(
           s"Expect depend <${walkTask.expectDepend}> not in the dependency tree of ${walkTask.executeTask}"
         )
