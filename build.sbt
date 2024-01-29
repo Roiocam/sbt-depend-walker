@@ -2,7 +2,25 @@ lazy val scala212 = "2.12.18"
 ThisBuild / crossScalaVersions := Seq(scala212)
 ThisBuild / scalaVersion := scala212
 ThisBuild / versionScheme := Some("early-semver")
-ThisBuild / resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+
+inThisBuild(List(
+  organization := "io.github.roiocam",
+  homepage := Some(url("https://github.com/roiocam/sbt-depend-walker")),
+  // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
+  licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
+
+  developers := List(
+    Developer(
+      id = "roiocam",
+      name = "Andy chen",
+      email = "iRoiocam@gmail.com",
+      url = url("https://github.com/roiocam")
+    )
+  )
+))
+
+ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 
 // So that publishLocal doesn't continuously create new versions
 def versionFmt(out: sbtdynver.GitDescribeOutput): String = {
@@ -75,25 +93,11 @@ scriptedLaunchOpts += "-Xmx1024m"
 scriptedLaunchOpts ++= Seq("-Dplugin.version=" + version.value)
 scriptedLaunchOpts += "-debug"
 
-ThisBuild / licenses += ("Apache-2.0", url(
-  "https://www.apache.org/licenses/LICENSE-2.0.html"
-))
-ThisBuild / organization := "io.github.roiocam"
-ThisBuild / homepage := Some(
-  url("https://github.com/roiocam/sbt-depend-walker")
-)
 ThisBuild / scmInfo := Some(
   ScmInfo(
     url("https://github.com/roiocam/sbt-depend-walker"),
     "scm:git@github.com:roiocam/sbt-depend-walker.git"
   )
 )
+ThisBuild / publishMavenStyle := true
 ThisBuild / description := "sbt plugin for walking on build dependency"
-ThisBuild / developers := List(
-  Developer(
-    id = "roiocam",
-    name = "Andy chen",
-    email = "iRoiocam@gmail.com",
-    url = url("https://github.com/roiocam")
-  )
-)
