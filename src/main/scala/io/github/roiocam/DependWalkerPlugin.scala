@@ -1,8 +1,8 @@
 package io.github.roiocam
 
 import TaskDefine.{ScopeKeyMatcher, WalkTask}
-import sbt.Keys.*
-import sbt.*
+import sbt.Keys._
+import sbt._
 import sbt.internal.BuildStructure
 import sbt.plugins.JvmPlugin
 
@@ -97,7 +97,7 @@ object DependWalkerPlugin extends AutoPlugin {
         )
       } else {
         throw new Exception(
-          s"Expect depend <${walkTask.expectDepend}> not in the dependency tree of ${walkTask.executeTask}"
+          s"Expect depend (${walkTask.expectDepend.key.scope.config} / ${${walkTask.expectDepend.key.key}}) not in the dependency tree of (${walkTask.executeTask.key.scope.config} / ${walkTask.executeTask.key.key})"
         )
       }
     }
