@@ -77,7 +77,7 @@ scriptedLaunchOpts += "-debug"
 ThisBuild / licenses += ("Apache-2.0", url(
   "https://www.apache.org/licenses/LICENSE-2.0.html"
 ))
-ThisBuild / organization := "com.roiocam"
+ThisBuild / organization := "io.github.roiocam"
 ThisBuild / homepage := Some(
   url("https://github.com/roiocam/sbt-depend-walker")
 )

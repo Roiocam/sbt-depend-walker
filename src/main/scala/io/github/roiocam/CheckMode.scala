@@ -1,4 +1,4 @@
-package com.roiocam
+package io.github.roiocam
 
 sealed trait CheckMode
 

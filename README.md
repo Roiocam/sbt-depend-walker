@@ -11,7 +11,7 @@ Use the Apache Pekko project as an example
 add these line into `project/plugin.sbt`
 
 ```sbt
-addSbtPlugin("com.roiocam" % "sbt-depend-walker" % "1.0.0")
+addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "1.0.0")
 ```
 
 ### 2. create Depend-Walker settings
@@ -20,12 +20,10 @@ create `PekkoDependWalker` scala class on `project/PekkoDependWalker.scala`
 
 ```scala
 
-import Jdk9.CompileJdk9
-import com.roiocam.DependWalkerPlugin.autoImport.walkTasks
-import com.roiocam.TaskDefine._
-import com.roiocam._
-import sbt.Keys._
-import sbt._
+import io.github.roiocam.TaskDefine.*
+import io.github.roiocam.*
+import sbt.Keys.*
+import sbt.*
 
 object PekkoDependWalker {
 

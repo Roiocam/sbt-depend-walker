@@ -1,4 +1,4 @@
-package com.roiocam
+package io.github.roiocam
 
 import sbt.ScopedKey
 

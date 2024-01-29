@@ -1,6 +1,6 @@
-package com.roiocam
+package io.github.roiocam
 
-import com.roiocam.TaskDefine.{ScopeKeyMatcher, WalkTask}
+import TaskDefine.{ScopeKeyMatcher, WalkTask}
 import sbt.Keys.*
 import sbt.*
 import sbt.internal.BuildStructure
