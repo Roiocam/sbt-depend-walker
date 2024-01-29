@@ -19,7 +19,7 @@ inThisBuild(List(
   )
 ))
 
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
 // end ----------- sbt-ci-release
 
