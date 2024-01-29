@@ -3,12 +3,12 @@ ThisBuild / crossScalaVersions := Seq(scala212)
 ThisBuild / scalaVersion := scala212
 ThisBuild / versionScheme := Some("early-semver")
 
+// start ----------- sbt-ci-release
 inThisBuild(List(
   organization := "io.github.roiocam",
   homepage := Some(url("https://github.com/roiocam/sbt-depend-walker")),
   // Alternatively License.Apache2 see https://github.com/sbt/librarymanagement/blob/develop/core/src/main/scala/sbt/librarymanagement/License.scala
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
-
   developers := List(
     Developer(
       id = "roiocam",
@@ -21,6 +21,7 @@ inThisBuild(List(
 
 ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
 sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+// end ----------- sbt-ci-release
 
 // So that publishLocal doesn't continuously create new versions
 def versionFmt(out: sbtdynver.GitDescribeOutput): String = {
@@ -44,11 +45,12 @@ ThisBuild / dynver := {
     .mkVersion(versionFmt, fallbackVersion(d))
 }
 
+// start ----------- sbt-github-actions
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(List("test", "scripted"))
 )
-
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+// publish snapshot and release
 ThisBuild / githubWorkflowPublishTargetBranches :=
   Seq(
     RefPredicate.StartsWith(Ref.Tag("v")),
@@ -78,6 +80,7 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec.temurin("11"),
   JavaSpec.temurin("17")
 )
+// end ----------- sbt-github-actions
 
 name := "sbt-depend-walker"
 enablePlugins(SbtPlugin)
@@ -99,5 +102,3 @@ ThisBuild / scmInfo := Some(
     "scm:git@github.com:roiocam/sbt-depend-walker.git"
   )
 )
-ThisBuild / publishMavenStyle := true
-ThisBuild / description := "sbt plugin for walking on build dependency"
